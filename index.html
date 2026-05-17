@@ -842,10 +842,10 @@ document.querySelectorAll('.showcase-card').forEach(card => {
                     <span class="text-primary font-medium tracking-wider uppercase text-sm">Portfolio</span>
                     <h2 class="text-3xl md:text-5xl font-heading font-bold text-white mt-2 md:mt-3">Featured Work</h2>
                 </div>
-                <a href="#" id="view-all-projects-btn" class="flex items-center text-primary md:text-gray-400 hover:text-white transition-colors group pb-1 md:pb-2 border-b border-transparent hover:border-white text-sm md:text-base font-medium md:font-normal">
+                <button type="button" id="view-all-projects-btn" class="flex items-center text-primary md:text-gray-400 hover:text-white transition-colors group pb-1 md:pb-2 border-b border-transparent hover:border-white text-sm md:text-base font-medium md:font-normal">
                     View All Projects
                     <svg class="w-4 h-4 md:w-5 md:h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                </a>
+                </button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
@@ -1214,16 +1214,11 @@ Focused on innovation, performance, and user experience.</p>
         const showcaseView = document.getElementById('showcase-view');
 
         if (viewAllBtn && showcaseView && closeShowcaseBtn) {
-            viewAllBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showcaseView.classList.remove('hidden');
+            viewAllBtn.addEventListener('click', () => {
+                showcaseView.style.display = 'block';
+                showcaseView.classList.remove('hidden', 'showcase-hidden');
+                showcaseView.classList.add('showcase-visible');
                 document.body.style.overflow = 'hidden'; // Lock main page scroll
-                
-                // Small delay to allow display:block to apply before animating opacity
-                setTimeout(() => {
-                    showcaseView.classList.remove('showcase-hidden');
-                    showcaseView.classList.add('showcase-visible');
-                }, 10);
             });
 
             closeShowcaseBtn.addEventListener('click', (e) => {
@@ -1234,6 +1229,7 @@ Focused on innovation, performance, and user experience.</p>
                 // Wait for animation to finish before completely hiding element
                 setTimeout(() => {
                     showcaseView.classList.add('hidden');
+                    showcaseView.style.display = 'none';
                     document.body.style.overflow = ''; // Unlock scroll
                 }, 500); 
             });
