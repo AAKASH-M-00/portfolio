@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio showcase - Aakash">
+    <title>Projects — Aakash</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        bgDark: '#09090b',
+                        bgCard: '#18181b',
+                        primary: '#10b981',
+                        secondary: '#06b6d4',
+                        accent: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: #09090b; color: #e5e7eb; font-family: Inter, sans-serif; }
+        img { max-width: 100%; height: auto; display: block; }
+        .glass { background: rgba(24,24,27,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .text-gradient { background: linear-gradient(135deg, #10b981, #06b6d4, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @media (max-width: 420px) {
+            .glass { padding: 0; }
+            .glass .p-4 { padding: 0.75rem; }
+            h1 { font-size: 1.8rem; }
+            .showcase-card h3 { font-size: 1rem; }
+            .showcase-card p { font-size: 0.9rem; }
+            .relative.h-48 { height: 160px; }
+        }
+    </style>
+</head>
+<body class="bg-bgDark text-gray-300">
+    <header class="max-w-4xl mx-auto px-4 py-6 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <a href="index.html" class="text-white font-heading font-bold text-lg">M<span class="text-primary">.</span>Aakash</a>
+        </div>
+        <a href="index.html" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white">Back</a>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pb-12">
+        <div class="mb-6">
+            <span class="text-primary text-xs uppercase font-medium">Full Portfolio</span>
+            <h1 class="text-3xl sm:text-4xl font-heading font-bold mt-2">All <span class="text-gradient">Projects</span></h1>
+            <p class="text-gray-400 mt-2">A mobile-first, responsive showcase of selected projects. Tap any card to open the live project.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div data-default-url="https://aakash-m-00.github.io/HPY-moments/" class="showcase-card glass rounded-2xl overflow-hidden btn-ripple">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="images/hpymoments.png" alt="Travel Booking" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-heading font-bold text-white">Travel Booking</h3>
+                    <p class="text-sm text-gray-400 mt-2">Discover new places and plan your perfect getaway with ease.</p>
+                    <div class="mt-3 flex items-center gap-2 text-xs text-white">
+                        <span class="px-2 py-1 bg-primary/20 rounded-full">React</span>
+                        <span class="px-2 py-1 bg-primary/20 rounded-full">Tailwind</span>
+                    </div>
+                </div>
+            </div>
+
+            <div data-default-url="https://ddc-ev.github.io/DDC/" class="showcase-card glass rounded-2xl overflow-hidden btn-ripple">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="images/ddcimage.png" alt="Startup Webflow" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-heading font-bold text-white">Startup Webflow</h3>
+                    <p class="text-sm text-gray-400 mt-2">From idea to execution — we make it happen.</p>
+                    <div class="mt-3 flex items-center gap-2 text-xs text-white">
+                        <span class="px-2 py-1 bg-secondary/20 rounded-full">Next.js</span>
+                        <span class="px-2 py-1 bg-secondary/20 rounded-full">Framer Motion</span>
+                    </div>
+                </div>
+            </div>
+
+            <div data-default-url="https://fastambulanceservice.com/" class="showcase-card glass rounded-2xl overflow-hidden btn-ripple">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="images/ambulance.png" alt="Ambulance Service" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-heading font-bold text-white">Ambulance Service</h3>
+                    <p class="text-sm text-gray-400 mt-2">Fast, responsive and user-friendly ambulance service website.</p>
+                    <div class="mt-3 flex items-center gap-2 text-xs text-white">
+                        <span class="px-2 py-1 bg-secondary/20 rounded-full">UI/UX</span>
+                        <span class="px-2 py-1 bg-secondary/20 rounded-full">HTML</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional empty/future slots kept mobile-friendly -->
+            <div class="glass rounded-2xl p-6 flex items-center justify-center text-gray-500">More coming soon</div>
+            <div class="glass rounded-2xl p-6 flex items-center justify-center text-gray-500">More coming soon</div>
+            <div class="glass rounded-2xl p-6 flex items-center justify-center text-gray-500">More coming soon</div>
+        </div>
+
+        <footer class="mt-8 text-center text-sm text-gray-400">
+            &copy; <span id="year">2026</span> Aakash
+        </footer>
+    </main>
+
+    <script>
+        // Make showcase cards tappable/clickable on mobile
+        document.querySelectorAll('.showcase-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const url = card.getAttribute('data-default-url') || '#';
+                if (url && url !== '#') window.open(url, '_blank');
+            });
+        });
+
+        // Ripple effect simple touch feedback
+        document.querySelectorAll('.btn-ripple').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple-span';
+                ripple.style.left = x + 'px'; ripple.style.top = y + 'px';
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.marginLeft = -(size/2) + 'px'; ripple.style.marginTop = -(size/2) + 'px';
+                ripple.style.position = 'absolute'; ripple.style.borderRadius = '50%'; ripple.style.background = 'rgba(255,255,255,0.06)';
+                ripple.style.transform = 'scale(0)'; ripple.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+                el.appendChild(ripple);
+                requestAnimationFrame(() => { ripple.style.transform = 'scale(3)'; ripple.style.opacity = '0'; });
+                setTimeout(() => ripple.remove(), 700);
+            });
+        });
+
+        // Footer year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
