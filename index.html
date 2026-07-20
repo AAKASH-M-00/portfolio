@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aakash M - Premium Portfolio</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        @media (min-width: 768px) {
+            .split-bg-left {
+                clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+            }
+            .split-bg-right {
+                clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+            }
+        }
+
+        .mobile-hero-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
+        }
+
+        /* Infinite horizontal scroll marquee logic (Left to Right) */
+        @keyframes scroll-left-to-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        .animate-marquee-right {
+            display: flex;
+            width: max-content;
+            animation: scroll-left-to-right 20s linear infinite;
+        }
+
+        .animate-marquee-right:hover {
+            animation-play-state: paused;
+        }
+
+        /* Custom Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222222;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444444;
+        }
+
+        .nav-transition {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Minimized centered logo pill classes */
+        .minimized-pill {
+            width: 70px !important;
+            height: 70px !important;
+            padding: 0 !important;
+            border-radius: 9999px !important;
+            left: 50% !important;
+            transform: translate(-50%, 1rem) !important;
+            background-color: rgba(0, 0, 0, 0.9) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5) !important;
+            justify-content: center !important;
+        }
+
+        .minimized-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            transform: scale(0.75) !important;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* Portfolio vertical cascade trigger helpers */
+        .portfolio-item {
+            will-change: transform, opacity;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease-out;
+        }
+
+        .terminal-text {
+            font-family: 'Share Tech Mono', monospace;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-light': '#e5e5e5', 
+                        'primary-dark': '#000000',  
+                        'accent-gray': '#1c1c1e',   
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-primary-dark text-white overflow-x-hidden">
+
+    <!-- Floating Header Navigation -->
+    <header id="floating-navbar" class="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center md:px-12 lg:px-24 nav-transition border-b border-transparent">
+        
+        <!-- Brand Monogram Logo "A" (Minimalist stylized structural design) -->
+        <div id="logo-container" class="flex items-center nav-transition">
+            <svg id="nav-logo-svg" class="w-10 h-10 md:w-12 md:h-12 text-white md:text-black nav-transition cursor-pointer" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <!-- Outer stylized geometric loop shape -->
+                <path d="M50 5 L85 25 L85 75 L50 95 L15 75 L15 25 Z" stroke="currentColor" stroke-width="8" stroke-linejoin="round" />
+                <!-- Dynamic core geometric "A" layout -->
+                <path d="M32 68 L50 28 L68 68" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M41 53 H59" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <!-- Desktop Navigation Links (Proper Split Screen Contrast Matching) -->
+        <div id="desktop-links-container" class="hidden md:flex items-center space-x-10 text-sm font-semibold tracking-wide nav-transition">
+            <a href="#about" id="nav-link-about" class="text-white hover:text-gray-400 transition-colors duration-300">About me</a>
+            <a href="#skills" id="nav-link-skills" class="text-white hover:text-gray-400 transition-colors duration-300">Skills</a>
+            <a href="#portfolio" id="nav-link-portfolio" class="text-white hover:text-gray-400 transition-colors duration-300">Projects</a>
+            <a href="#contact" id="nav-link-contact" class="text-white hover:text-gray-400 transition-colors duration-300">Contact</a>
+            
+            <!-- Dynamic Resume Downloader Action -->
+            <button onclick="downloadResume()" id="nav-resume-btn" class="bg-white text-black px-6 py-2.5 rounded-full hover:bg-black hover:text-white border border-transparent hover:border-white nav-transition font-bold tracking-tight text-xs flex items-center gap-2 uppercase">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Resume
+            </button>
+        </div>
+
+        <!-- Mobile Menu Trigger -->
+        <button id="mobile-menu-btn" class="md:hidden text-white focus:outline-none nav-transition" aria-label="Toggle Menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Mobile Fullscreen Menu Drawer -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black/98 z-[60] hidden flex-col items-center justify-center space-y-8 text-2xl font-bold tracking-wider transition-all duration-300">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-white hover:rotate-90 transition-all duration-300" aria-label="Close Menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <a href="#about" class="mobile-link hover:text-gray-400 transition">About me</a>
+        <a href="#skills" class="mobile-link hover:text-gray-400 transition">Skills</a>
+        <a href="#portfolio" class="mobile-link hover:text-gray-400 transition">Projects</a>
+        <a href="#contact" class="mobile-link hover:text-gray-400 transition">Contact</a>
+        
+        <!-- Mobile Resume Trigger -->
+        <button onclick="downloadResume()" class="mobile-link bg-white text-black px-8 py-3 rounded-full hover:bg-gray-200 transition text-lg font-bold flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-down"></i> Resume
+        </button>
+    </div>
+
+    <!-- Hero Segment (Double Split Screen Layout aligned with screenshots) -->
+    <section id="home" class="relative min-h-screen flex flex-col md:flex-row w-full overflow-hidden">
+        
+        <!-- Desktop Split Background Left (Light Gray) -->
+        <div class="hidden md:block absolute top-0 left-0 w-[55%] h-full bg-primary-light split-bg-left z-0"></div>
+
+        <!-- Mobile Layout: Styled based on Screenshot 2026-07-15 121428.png -->
+        <div class="md:hidden relative w-full h-screen flex flex-col justify-end">
+            <!-- Mobile Portrait Image (Background) -->
+            <div class="absolute inset-0 z-0">
+                <img src="images/myImage.png" 
+                     alt="Aakash Portrait Mobile" 
+                     class="w-full h-full object-cover object-top"
+                     style="object-position: center 20%;"
+                     onerror="this.src='https://placehold.co/800x1200/111111/ffffff?text=Aakash+Portrait'">
+            </div>
+            
+            <!-- Mobile Content Overlay -->
+            <div class="relative z-10 w-full p-8 pb-16 mobile-hero-overlay flex justify-between items-end">
+                <div class="flex flex-col">
+                    <p class="text-xl font-medium text-gray-300 mb-1">Hi, I am</p>
+                    <h1 class="text-5xl font-extrabold text-white mb-2 tracking-wide">Aakash</h1>
+                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Full Stack Web Developer / UI Designer</p>
+                </div>
+                
+                <!-- Mobile Social Actions -->
+                <div class="flex flex-col space-y-4 mb-2">
+                    <a href="mailto:maakash56@jnn.edu.in" class="w-10 h-10 rounded-full bg-black/60 border border-gray-700 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 text-white backdrop-blur-sm" aria-label="Email">
+                        <i class="fa-solid fa-at text-lg"></i>
+                    </a>
+                    <a href="https://github.com/AAKASH-M-00" target="_blank" class="w-10 h-10 rounded-full bg-black/60 border border-gray-700 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 text-white backdrop-blur-sm" aria-label="GitHub">
+                        <i class="fa-brands fa-github text-lg"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/aakash-in/" target="_blank" class="w-10 h-10 rounded-full bg-black/60 border border-gray-700 flex items-center justify-center hover:bg-white hover:text-black transition-all duration-300 text-white backdrop-blur-sm" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in text-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Layout Content (Matching Screenshot 2026-07-14 110503.png) -->
+        <div class="hidden md:flex relative z-10 w-full h-screen">
+            <!-- Left Content Area (Light grey theme side) -->
+            <div class="w-1/2 h-full flex flex-col justify-center pl-16 lg:pl-32 xl:pl-44">
+                <p class="text-3xl font-medium text-gray-800 mb-2">Hi, I am</p>
+                <h1 class="text-8xl font-black text-black mb-4 tracking-tighter">Aakash</h1>
+                <p class="text-xl text-gray-600 font-semibold mb-12 uppercase tracking-wide">Full Stack Web Developer / UI Designer</p>
+                
+                <!-- Desktop Social Icons Layout -->
+                <div class="flex space-x-5">
+                    <a href="mailto:maakash56@jnn.edu.in" class="w-12 h-12 rounded bg-gray-300/40 shadow-sm flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 text-gray-800" aria-label="Email">
+                        <i class="fa-solid fa-at text-xl"></i>
+                    </a>
+                    <a href="https://github.com/AAKASH-M-00" target="_blank" class="w-12 h-12 rounded bg-gray-300/40 shadow-sm flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 text-gray-800" aria-label="GitHub">
+                        <i class="fa-brands fa-github text-xl"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/aakash-in/" target="_blank" class="w-12 h-12 rounded bg-gray-300/40 shadow-sm flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 text-gray-800" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in text-xl"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Content Area (Image on dark background side) -->
+            <div class="w-1/2 h-full flex items-end justify-center relative">
+                <div class="w-[82%] max-w-lg h-[86%] relative z-20">
+                     <img src="images/myImage.png" 
+                          alt="Aakash Portrait Desktop" 
+                          class="w-full h-full object-cover object-top rounded-t-[100px] shadow-2xl filter drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+                          onerror="this.src='https://placehold.co/600x800/111111/ffffff?text=Aakash+Desktop'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beautiful Asymmetric Editorial About Me Section (Clean, high-readability, black/grey/white) -->
+    <section id="about" class="py-28 px-6 md:px-16 lg:px-24 bg-[#0a0a0c] border-t border-[#16161a] relative overflow-hidden">
+        <div class="absolute -left-40 top-1/4 w-96 h-96 bg-white/[0.01] rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-40 bottom-1/4 w-96 h-96 bg-white/[0.015] rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                
+                <!-- Left Editorial Segment: Clean Paragraph Narrative & Identity -->
+                <div class="lg:col-span-6 space-y-8 z-10">
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center gap-3 px-3.5 py-1.5 bg-white/5 border border-white/10 rounded-full">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                            <span class="text-[10px] uppercase tracking-[0.25em] font-bold text-gray-400 font-mono">01 // MY STORY</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-none uppercase">
+                            WHO I AM &<br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white">WHAT DRIVES ME</span>
+                        </h2>
+                    </div>
+
+                    <!-- Clean and highly readable summary paragraph based on resume -->
+                    <div class="text-gray-300 space-y-6 text-base md:text-lg font-light leading-relaxed">
+                        <p>
+                            I am a <strong class="text-white font-medium">Computer Science Engineering student</strong> at JNN Institute of Engineering with a deep interest in Full Stack Web Development, UI/UX Design, and Software Product Development. My approach is centered on writing elegant, maintainable code to craft highly intuitive digital experiences that solve real-world problems.
+                        </p>
+                        <p class="text-gray-400 text-sm md:text-base">
+                            I thrive on building responsive interfaces and optimized systems that balance technical precision with beautiful visual aesthetics. Whether collaborating on innovative digital solutions or building tools designed to optimize business engagement, I focus heavily on delivering seamless accessibility and solid architecture.
+                        </p>
+                    </div>
+
+                    <!-- Direct contact / locations card badges -->
+                    <div class="grid grid-cols-2 gap-4 pt-6 border-t border-white/10 font-mono">
+                        <div>
+                            <span class="text-[9px] text-gray-500 block uppercase tracking-wider">CURRENT DOMAIN</span>
+                            <span class="text-xs text-white font-semibold">Chennai, India</span>
+                        </div>
+                        <div>
+                            <span class="text-[9px] text-gray-500 block uppercase tracking-wider">ACADEMIC TIMELINE</span>
+                            <span class="text-xs text-white font-semibold">2025 - 2029</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Editorial Segment: Clean, minimalist Timeline -->
+                <div class="lg:col-span-6 w-full space-y-8 z-10">
+                    <div class="space-y-4">
+                        <h3 class="text-xs uppercase tracking-widest font-mono text-gray-500">// TIMELINE EXPERIENCE & EDUCATION</h3>
+                    </div>
+
+                    <div class="relative border-l border-white/10 pl-6 space-y-8">
+                        <!-- Timeline Element 1 (Dark Dragons) -->
+                        <div class="relative">
+                            <!-- Bullet -->
+                            <div class="absolute -left-[30px] top-1 w-4 h-4 rounded-full bg-white border-4 border-[#0a0a0c]"></div>
+                            <div class="flex items-baseline justify-between flex-wrap gap-2">
+                                <h4 class="text-lg font-bold text-white uppercase">Web Development Intern</h4>
+                                <span class="text-xs font-mono text-gray-400 bg-white/5 px-2.5 py-1 rounded">JULY 2026 - CURRENT</span>
+                            </div>
+                            <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Dark Dragons Caelestis</p>
+                            <ul class="text-sm text-gray-400 font-light mt-3 space-y-1.5 list-disc list-inside">
+                                <li>Developed responsive web interfaces using modern frontend technologies.</li>
+                                <li>Collaborated with team developers to enhance interface speed and UX flows.</li>
+                                <li>Assisted in implementing new core product layouts and optimizing digital assets.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Timeline Element 2 (Freelance Developer) -->
+                        <div class="relative">
+                            <!-- Bullet -->
+                            <div class="absolute -left-[30px] top-1 w-4 h-4 rounded-full bg-gray-500 border-4 border-[#0a0a0c]"></div>
+                            <div class="flex items-baseline justify-between flex-wrap gap-2">
+                                <h4 class="text-lg font-bold text-white uppercase">Freelance Web Developer</h4>
+                                <span class="text-xs font-mono text-gray-400 bg-white/5 px-2.5 py-1 rounded">2025 - PRESENT</span>
+                            </div>
+                            <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Independent Practice</p>
+                            <ul class="text-sm text-gray-400 font-light mt-3 space-y-1.5 list-disc list-inside">
+                                <li>Designed and deployed responsive websites tailored directly to regional client specifications.</li>
+                                <li>Delivered high-performance layouts resulting in improved localized conversions.</li>
+                                <li>Structured customized visual wireframes in Figma ahead of full-stack implementations.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Timeline Element 3 (JNN Education) -->
+                        <div class="relative">
+                            <!-- Bullet -->
+                            <div class="absolute -left-[30px] top-1 w-4 h-4 rounded-full bg-gray-700 border-4 border-[#0a0a0c]"></div>
+                            <div class="flex items-baseline justify-between flex-wrap gap-2">
+                                <h4 class="text-lg font-bold text-white uppercase">B.E. Computer Science Engineering</h4>
+                                <span class="text-xs font-mono text-gray-400 bg-white/5 px-2.5 py-1 rounded">2025 - 2029</span>
+                            </div>
+                            <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">JNN Institute of Engineering</p>
+                            <p class="text-sm text-gray-400 font-light mt-2">
+                                Actively establishing a strong academic and practical base in software architecture, algorithms, and modular design.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Endless Auto-scrolling Technical Skills Ribbon (No Heading) -->
+    <section id="skills" class="py-12 bg-black border-t border-b border-[#111111] relative overflow-hidden">
+        
+        <!-- Edge Fades for premium horizontal depth visual layout -->
+        <div class="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+
+        <div class="w-full overflow-hidden">
+            <!-- Infinite Left-To-Right Scrolling Marquee Wrapper -->
+            <div class="animate-marquee-right py-4">
+                
+                <!-- Duplicated sets for seamless wrap flow -->
+                <!-- Set 1 of actual resume skills -->
+                <div class="flex items-center space-x-12 px-6">
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-react text-cyan-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">React.js</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-node-js text-green-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Node.js</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-js text-yellow-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">JavaScript</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-python text-sky-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Python</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-solid fa-code text-indigo-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">C++ / Java</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <svg class="w-6 h-6 text-sky-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624C16.335,6.182,14.974,4.8,12.001,4.8z"/></svg>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Tailwind CSS</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-figma text-purple-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Figma UI/UX</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-github text-white text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Git / GitHub</span>
+                    </div>
+                </div>
+
+                <!-- Set 2 of actual resume skills (loop matching) -->
+                <div class="flex items-center space-x-12 px-6">
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-react text-cyan-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">React.js</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-node-js text-green-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Node.js</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-js text-yellow-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">JavaScript</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-python text-sky-500 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Python</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-solid fa-code text-indigo-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">C++ / Java</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <svg class="w-6 h-6 text-sky-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624C16.335,6.182,14.974,4.8,12.001,4.8z"/></svg>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Tailwind CSS</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-figma text-purple-400 text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Figma UI/UX</span>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-[#111111] hover:bg-[#1a1a1a] border border-white/10 rounded-full px-6 py-3 transition duration-300 cursor-default">
+                        <i class="fa-brands fa-github text-white text-2xl"></i>
+                        <span class="text-sm font-bold uppercase tracking-wider text-white">Git / GitHub</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Portfolio Section with Cascading Top-To-Down Scroll trigger -->
+    <section id="portfolio" class="py-32 px-6 md:px-16 lg:px-24 bg-black relative min-h-screen overflow-hidden flex flex-col justify-center">
+        
+        <!-- Gravitational Backdrop "PORTFOLIO" for visual structural depth -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+            <h1 id="portfolio-bg-title" class="text-[13vw] font-black text-white/[0.02] uppercase tracking-tighter select-none transition-transform duration-300 ease-out">
+                PROJECTS
+            </h1>
+        </div>
+
+        <div class="max-w-7xl mx-auto w-full relative z-10">
+            
+            <!-- Portfolio Section Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full mb-4">
+                        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                        <span class="text-xs uppercase tracking-widest font-semibold text-gray-300">02 / EXPERT IMPLEMENTATIONS</span>
+                    </div>
+                    <h2 class="text-5xl font-black text-white tracking-tight uppercase">CREATIVE SOLUTIONS</h2>
+                </div>
+            </div>
+
+            <!-- Portfolio Grid Layout: Cascading cards dropping down smoothly from above -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolio-grid">
+                
+                <!-- Project 1 (EV Startup) -->
+                <a href="https://ddc-ev.github.io/DDC/" target="_blank" class="portfolio-item block cursor-pointer group relative bg-[#0e0e10] border border-white/5 rounded-3xl overflow-hidden shadow-2xl" data-category="apps">
+                    <!-- Project Image with luxury overlay -->
+                    <div class="aspect-video w-full overflow-hidden relative bg-neutral-900">
+                        <img src="images/ddcimage.png" 
+                             alt="DDC EV Startup Layout" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x450/222222/ffffff?text=DDC+EV+Startup'">
+                        <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <span class="text-xs text-white border border-white/30 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest bg-black/40 backdrop-blur-sm">View Project <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Details Info block -->
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Mobile-First</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Scroll Animations</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">UI/UX</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-tight group-hover:text-gray-300 transition-colors">DDC EV Startup Corporate Website</h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">Designed and built a modern responsive corporate website for an electric vehicle startup featuring brand identity and optimized components.</p>
+                    </div>
+                </a>
+
+                <a href="https://fastambulanceservice.com/"target="_blank" class="portfolio-item block cursor-pointer group relative bg-[#0e0e10] border border-white/5 rounded-3xl overflow-hidden shadow-2xl" data-category="ui">
+                    <!-- Project Image -->
+                    <div class="aspect-video w-full overflow-hidden relative bg-neutral-900">
+                        <img src="images/ambulance.png" 
+                             alt="Web Solutions layout" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x450/222222/ffffff?text=Indian+Business+Webs'">
+                        <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <span class="text-xs text-white border border-white/30 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest bg-black/40 backdrop-blur-sm">View Project <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Details Info block -->
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Tailwind</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Enquiry Funnels</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Clean UI</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-tight group-hover:text-gray-300 transition-colors">Ambulance Service </h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">Fast, responsive and user-friendly ambulance service website.</p>
+                    </div>
+                </a>
+
+                <!-- Project 2 (Business Solutions) -->
+                <a href="https://aakash-m-00.github.io/bridge/" target="_blank" class="portfolio-item block cursor-pointer group relative bg-[#0e0e10] border border-white/5 rounded-3xl overflow-hidden shadow-2xl" data-category="ui">
+                    <!-- Project Image -->
+                    <div class="aspect-video w-full overflow-hidden relative bg-neutral-900">
+                        <img src="images/agency.png" 
+                             alt="Web Solutions layout" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x450/222222/ffffff?text=Indian+Business+Webs'">
+                        <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <span class="text-xs text-white border border-white/30 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest bg-black/40 backdrop-blur-sm">View Project <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Details Info block -->
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Tailwind</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Enquiry Funnels</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Clean UI</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-tight group-hover:text-gray-300 transition-colors">Web Solutions for Indian Businesses</h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">Engineered highly responsive business layouts, optimized to build trust, streamline localized customer enquiry, and speed up online presence.</p>
+                    </div>
+                </a>
+
+                <!-- Project 3 (WhatsApp Ordering eComm) -->
+                <a href="https://apoorvaonline.vercel.app/" target="_blank" class="portfolio-item block cursor-pointer group relative bg-[#0e0e10] border border-white/5 rounded-3xl overflow-hidden shadow-2xl" data-category="apps">
+                    <!-- Project Image -->
+                    <div class="aspect-video w-full overflow-hidden relative bg-neutral-900">
+                        <img src="images/apoorva.png" 
+                             alt="E-commerce catalog" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x450/222222/ffffff?text=WhatsApp+Ordering'">
+                        <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <span class="text-xs text-white border border-white/30 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest bg-black/40 backdrop-blur-sm">View Project <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Details Info block -->
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">API Link</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">WhatsApp Commerce</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Dynamic</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-tight group-hover:text-gray-300 transition-colors">E-Commerce with WhatsApp Ordering</h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">A visual product catalog that enables direct automated cart handoff checkout into merchant WhatsApp chatlines, bypassing high-cost gateways.</p>
+                    </div>
+                </a>
+                <!-- Project 4 (travel agency) -->
+                <a href="https://aakash-m-00.github.io/HPY-moments/" target="_blank" class="portfolio-item block cursor-pointer group relative bg-[#0e0e10] border border-white/5 rounded-3xl overflow-hidden shadow-2xl" data-category="apps">
+                    <!-- Project Image -->
+                    <div class="aspect-video w-full overflow-hidden relative bg-neutral-900">
+                        <img src="images/hpymoments.png" 
+                             alt="E-commerce catalog" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x450/222222/ffffff?text=WhatsApp+Ordering'">
+                        <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                            <span class="text-xs text-white border border-white/30 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest bg-black/40 backdrop-blur-sm">View Project <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Details Info block -->
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">SPA</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">easy booking</span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 bg-white/10 rounded text-gray-300">Dynamic</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2 tracking-tight group-hover:text-gray-300 transition-colors">Travel agency</h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed">Build a easy travel booking agency website , all in one website with trustable pre-booking and scheduling </p>
+                    </div>
+                </a>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact section -->
+    <section id="contact" class="py-24 px-6 md:px-16 lg:px-24 bg-[#0a0a0a] border-t border-[#1a1a1a] flex flex-col items-center justify-center relative">
+        <div class="max-w-xl w-full">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full mb-4">
+                    <span class="w-2 h-2 rounded-full bg-white"></span>
+                    <span class="text-xs uppercase tracking-widest font-semibold text-gray-300">03 / COLLABORATION GATE</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight uppercase">GET IN TOUCH</h2>
+                <p class="text-sm text-gray-400 mt-3 font-light">Let's craft professional web solutions tailored directly to your business. Reach out now!</p>
+            </div>
+            
+            <!-- Real-world direct developer contact options -->
+            <div class="flex flex-col space-y-3 mb-8 font-mono text-xs text-center text-gray-300 bg-white/5 border border-white/10 p-5 rounded-2xl">
+                <div><i class="fa-solid fa-location-dot text-white mr-2"></i> Chennai, Tamil Nadu, India</div>
+                <div><i class="fa-solid fa-envelope text-white mr-2"></i> maakash56@jnn.edu.in</div>
+                <div><i class="fa-solid fa-phone text-white mr-2"></i> +91 72003 79569</div>
+            </div>
+
+            <form id="contact-form" class="w-full flex flex-col space-y-4">
+                <input type="text" placeholder="Your Name" required class="p-4 bg-black border border-white/10 rounded-xl text-white focus:outline-none focus:border-white transition-colors duration-300 text-sm">
+                <input type="email" placeholder="Your Email" required class="p-4 bg-black border border-white/10 rounded-xl text-white focus:outline-none focus:border-white transition-colors duration-300 text-sm">
+                <textarea placeholder="Tell me about your product or website requirements..." rows="4" required class="p-4 bg-black border border-white/10 rounded-xl text-white focus:outline-none focus:border-white transition-colors duration-300 text-sm resize-none"></textarea>
+                
+                <!-- Feedback Toast Box within form -->
+                <div id="form-toast" class="hidden p-4 rounded-xl text-sm font-medium transition-all duration-300 text-center"></div>
+
+                <button type="submit" class="bg-white hover:bg-gray-200 text-black font-extrabold py-4 rounded-xl transition duration-300 tracking-tight text-sm uppercase">Send Inquiry</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer block -->
+    <footer class="py-12 bg-black border-t border-[#111111] text-center text-xs text-gray-500 tracking-wider">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="font-extrabold text-white text-sm tracking-widest">AAKASH M</span>
+                <span class="text-gray-700">|</span>
+                <span>© 2026. All rights reserved.</span>
+            </div>
+            <div class="flex space-x-6 text-gray-400">
+                <a href="#about" class="hover:text-white transition">About</a>
+                <a href="#skills" class="hover:text-white transition">Skills</a>
+                <a href="#portfolio" class="hover:text-white transition">Projects</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Floating Responsive/Collapsing Header Navbar Logic
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById('floating-navbar');
+        const logoSvg = document.getElementById('nav-logo-svg');
+        const desktopLinksContainer = document.getElementById('desktop-links-container');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navResumeBtn = document.getElementById('nav-resume-btn');
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+
+            // Header Responsive Compression & Expansion logic
+            if (currentScrollY > 50) {
+                if (currentScrollY > lastScrollY) {
+                    // Scrolling DOWN State: Minimize to circular pill containing ONLY the monogram logo
+                    navbar.classList.add('minimized-pill');
+                    navbar.classList.remove('w-full', 'left-0', 'right-0', 'px-6', 'py-6', 'md:px-12', 'lg:px-24', 'bg-transparent', 'border-transparent', 'rounded-none', 'py-3.5', 'bg-black/90', 'backdrop-blur-md', 'border-b', 'border-white/10');
+
+                    desktopLinksContainer.classList.add('minimized-hidden');
+                    mobileMenuBtn.classList.add('minimized-hidden');
+
+                    logoSvg.classList.add('text-white', 'w-8', 'h-8');
+                    logoSvg.classList.remove('md:text-black', 'w-10', 'h-10', 'md:w-12', 'md:h-12');
+                } else {
+                    // Scrolling UP State: Maximize to full width with elegant frosted glass background
+                    navbar.classList.remove('minimized-pill');
+                    navbar.classList.add('w-full', 'left-0', 'top-0', 'px-6', 'py-3.5', 'md:px-12', 'lg:px-24', 'bg-black/95', 'backdrop-blur-md', 'border-b', 'border-white/10', 'rounded-none');
+                    navbar.classList.remove('bg-transparent', 'border-transparent');
+
+                    desktopLinksContainer.classList.remove('minimized-hidden');
+                    mobileMenuBtn.classList.remove('minimized-hidden');
+
+                    logoSvg.classList.add('text-white', 'w-8', 'h-8');
+                    logoSvg.classList.remove('md:text-black', 'w-10', 'h-10', 'md:w-12', 'md:h-12');
+
+                    if (navResumeBtn) {
+                        navResumeBtn.classList.add('px-4', 'py-1.5', 'text-[10px]');
+                        navResumeBtn.classList.remove('px-6', 'py-2.5', 'text-xs');
+                    }
+                }
+            } else {
+                // Maximized State (Exactly at the top, scroll depth under 50px)
+                navbar.classList.remove('minimized-pill');
+                navbar.classList.add('w-full', 'left-0', 'top-0', 'px-6', 'py-6', 'md:px-12', 'lg:px-24', 'bg-transparent', 'border-transparent', 'rounded-none');
+                navbar.classList.remove('bg-black/95', 'backdrop-blur-md', 'border-b', 'border-white/10', 'py-3.5');
+
+                desktopLinksContainer.classList.remove('minimized-hidden');
+                mobileMenuBtn.classList.remove('minimized-hidden');
+
+                // Restore dual-sided split layout contrast
+                logoSvg.classList.remove('text-white', 'w-8', 'h-8');
+                logoSvg.classList.add('w-10', 'h-10', 'md:w-12', 'md:h-12', 'text-white', 'md:text-black');
+
+                if (navResumeBtn) {
+                    navResumeBtn.classList.remove('px-4', 'py-1.5', 'text-[10px]');
+                    navResumeBtn.classList.add('px-6', 'py-2.5', 'text-xs');
+                }
+            }
+
+            lastScrollY = currentScrollY;
+        });
+
+        // Mobile Navigation Drawer Toggle Logic
+        const mobileMenuBtnElement = document.getElementById('mobile-menu-btn');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('flex');
+            document.body.style.overflow = mobileMenu.classList.contains('hidden') ? '' : 'hidden';
+        }
+
+        mobileMenuBtnElement.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+        // Form submission handle
+        const contactForm = document.getElementById('contact-form');
+        const formToast = document.getElementById('form-toast');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Extract form values
+            const nameInput = contactForm.querySelector('input[placeholder="Your Name"]');
+            const emailInput = contactForm.querySelector('input[placeholder="Your Email"]');
+            const messageInput = contactForm.querySelector('textarea');
+            
+            const name = nameInput ? nameInput.value : '';
+            const email = emailInput ? emailInput.value : '';
+            const message = messageInput ? messageInput.value : '';
+
+            // Construct pre-filled email metadata addressed directly to your school email
+            const recipient = "maakash56@jnn.edu.in";
+            const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
+            const body = encodeURIComponent(
+                `Hi Aakash,\n\n` +
+                `My name is ${name} (${email}).\n\n` +
+                `Here are my requirements:\n` +
+                `${message}\n\n` +
+                `Best regards,\n` +
+                `${name}`
+            );
+
+            // Construct standard mailto string
+            const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+
+            // Provide visual feedback inside the UI
+            formToast.textContent = "Thank you! Launching your mail client to send the inquiry directly to Aakash...";
+            formToast.className = "p-4 rounded-xl text-sm font-medium transition-all duration-300 text-center bg-white/10 text-white border border-white/20";
+            formToast.classList.remove('hidden');
+
+            // Reset form input lines
+            contactForm.reset();
+
+            // Open the mail application handoff
+            window.location.href = mailtoUrl;
+
+            setTimeout(() => {
+                formToast.classList.add('hidden');
+            }, 6000);
+        });
+
+        // Live Professional Resume Document Downloader Action
+        function downloadResume() {
+            const resumeContent = `=========================================================
+Aakash M - Computer Science Engineering Portfolio Resume
+=========================================================
+Contact Information:
+- Phone: +91 72003 79569
+- Email: maakash56@jnn.edu.in
+- LinkedIn: https://www.linkedin.com/in/aakash-in/
+- GitHub: https://github.com/AAKASH-M-00
+- Location: Chennai, Tamil Nadu, India
+
+---------------------------------------------------------
+PROFESSIONAL SUMMARY
+---------------------------------------------------------
+Computer Science Engineering student with a strong interest in Full Stack Web 
+Development, UI/UX Design, and Software Product Development. Passionate about 
+building scalable web applications and solving real-world problems through technology. 
+Skilled in developing responsive websites, creating intuitive user experiences, and 
+delivering business-focused digital solutions.
+
+---------------------------------------------------------
+EDUCATION
+---------------------------------------------------------
+JNN Institute of Engineering, Chennai
+Bachelor of Engineering (B.E.) - Computer Science Engineering | 2025 - 2029
+
+---------------------------------------------------------
+EXPERIENCE
+---------------------------------------------------------
+Web Development Intern | Dark Dragons Caelestis
+- Developed responsive web interfaces using modern web technologies.
+- Collaborated with development teams to enhance functional responsiveness and UX.
+- Assisted in implementing new features and optimizing digital pages.
+
+Freelance Web Developer | Self-Employed
+- Designed and built tailored web layouts directly to match client requirements.
+- Delivered high-performance and visually appealing multi-page applications.
+- Collaborated directly with business owners to resolve custom digital objectives.
+
+---------------------------------------------------------
+PROJECTS
+---------------------------------------------------------
+1. DDC EV Startup Website
+   - Designed and engineered a modern corporate website with a solid responsive design, 
+     custom scroll animations, and an interactive product showcase.
+
+2. Web Solutions for Indian Businesses
+   - Formulated clean business landing pages with high-performance enquiry channels, 
+     elevating localized merchant trust and digital engagement.
+
+3. E-Commerce Website with WhatsApp Ordering
+   - Built a custom catalog system allowing users to place immediate orders directly 
+     through client WhatsApp accounts, speeding up merchant checkout systems.
+
+---------------------------------------------------------
+TECHNICAL SKILLS
+---------------------------------------------------------
+- Languages: JavaScript, Python, Java, C++
+- Web Development: HTML5, CSS3, Tailwind CSS, React.js, Node.js, Express.js
+- Tools: Git, GitHub, Visual Studio Code, Figma
+
+---------------------------------------------------------
+SOFT SKILLS & LANGUAGES
+---------------------------------------------------------
+- Soft Skills: Problem Solving, Collaboration, Teamwork, Leadership, Adaptability
+- Languages: English, Tamil
+=========================================================`;
+
+            // Create temporary download element
+            const element = document.createElement('a');
+            const file = new Blob([resumeContent], {type: 'text/plain;charset=utf-8'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'Aakash_M_Resume.txt';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Staggered top-to-down cascade scroll animation trigger
+        const portfolioSection = document.getElementById('portfolio');
+        const cards = document.querySelectorAll('.portfolio-item');
+        const bgTitle = document.getElementById('portfolio-bg-title');
+
+        window.addEventListener('scroll', () => {
+            if (!portfolioSection) return;
+
+            const rect = portfolioSection.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            // Assess if portfolio zone is inside window boundaries
+            if (rect.top < viewportHeight && rect.bottom > 0) {
+                // Tracking scrolling progress: 0 when top enters the viewport, 1 when section is at the top
+                const totalHeight = viewportHeight + rect.height;
+                const currentScroll = viewportHeight - rect.top;
+                
+                let progress = currentScroll / (viewportHeight * 0.95); 
+                progress = Math.min(Math.max(progress, 0), 1); // Clamp
+
+                // Parallax shift the title
+                const backdropParallax = (1 - progress) * -40;
+                if (bgTitle) {
+                    bgTitle.style.transform = `translateY(${backdropParallax}px)`;
+                }
+
+                // Staggered Top-to-Down Cascading Cascade Effect
+                cards.forEach((card, index) => {
+                    const staggerDelay = index * 0.15;
+                    let cardProgress = (progress - staggerDelay) / (1 - staggerDelay);
+                    cardProgress = Math.min(Math.max(cardProgress, 0), 1); // Clamp
+
+                    // Calculate top-to-down cascade drop (starts at -80px and glides down to 0px)
+                    const startY = -80;
+                    const translateY = (1 - cardProgress) * startY;
+
+                    const scale = 0.95 + (0.05 * cardProgress);
+                    const opacity = cardProgress;
+
+                    // Implement hardware-accelerated transform mechanics
+                    card.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
+                    card.style.opacity = opacity;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
