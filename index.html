@@ -694,70 +694,128 @@
             lastScrollY = currentScrollY;
         });
 
-        // Mobile Navigation Drawer Toggle Logic
+        // Mobile Navigation Drawer Toggle Logic (improved accessibility & icon swap)
         const mobileMenuBtnElement = document.getElementById('mobile-menu-btn');
         const closeMenuBtn = document.getElementById('close-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
 
-        function toggleMenu() {
-            mobileMenu.classList.toggle('hidden');
-            mobileMenu.classList.toggle('flex');
-            document.body.style.overflow = mobileMenu.classList.contains('hidden') ? '' : 'hidden';
+        function setHamburgerIcon() {
+            mobileMenuBtnElement.innerHTML = `
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>`;
         }
 
+        function setCloseIcon() {
+            mobileMenuBtnElement.innerHTML = `
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>`;
+        }
+
+        function openMenu() {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+            mobileMenu.setAttribute('aria-hidden', 'false');
+            mobileMenuBtnElement.setAttribute('aria-expanded', 'true');
+            setCloseIcon();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+            mobileMenuBtnElement.setAttribute('aria-expanded', 'false');
+            setHamburgerIcon();
+            document.body.style.overflow = '';
+        }
+
+        function toggleMenu() {
+            if (mobileMenu.classList.contains('flex')) closeMenu();
+            else openMenu();
+        }
+
+        // Initialize state
+        mobileMenu.setAttribute('aria-hidden', mobileMenu.classList.contains('hidden') ? 'true' : 'false');
+        mobileMenuBtnElement.setAttribute('aria-expanded', 'false');
+        setHamburgerIcon();
+
         mobileMenuBtnElement.addEventListener('click', toggleMenu);
-        closeMenuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
 
         mobileLinks.forEach(link => {
-            link.addEventListener('click', toggleMenu);
+            link.addEventListener('click', closeMenu);
         });
 
-        // Form submission handle
+        // Form submission handle (automatic send using Formspree if configured)
         const contactForm = document.getElementById('contact-form');
         const formToast = document.getElementById('form-toast');
 
-        contactForm.addEventListener('submit', (e) => {
+        // Replace with your Formspree endpoint (leave empty to use mailto fallback)
+        const FORMSPREE_ENDPOINT = ""; // e.g. "https://formspree.io/f/yourFormId"
+
+        function showToast(message, isError = false) {
+            formToast.textContent = message;
+            formToast.className = `p-4 rounded-xl text-sm font-medium transition-all duration-300 text-center ${isError ? 'bg-red-600 text-white border border-red-700' : 'bg-white/10 text-white border border-white/20'}`;
+            formToast.classList.remove('hidden');
+            setTimeout(() => { formToast.classList.add('hidden'); }, 5000);
+        }
+
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             // Extract form values
             const nameInput = contactForm.querySelector('input[placeholder="Your Name"]');
             const emailInput = contactForm.querySelector('input[placeholder="Your Email"]');
             const messageInput = contactForm.querySelector('textarea');
             
-            const name = nameInput ? nameInput.value : '';
-            const email = emailInput ? emailInput.value : '';
-            const message = messageInput ? messageInput.value : '';
+            const name = nameInput ? nameInput.value.trim() : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+            const message = messageInput ? messageInput.value.trim() : '';
 
-            // Construct pre-filled email metadata addressed directly to your school email
-            const recipient = "maakash56@jnn.edu.in";
-            const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
-            const body = encodeURIComponent(
-                `Hi Aakash,\n\n` +
-                `My name is ${name} (${email}).\n\n` +
-                `Here are my requirements:\n` +
-                `${message}\n\n` +
-                `Best regards,\n` +
-                `${name}`
-            );
+            if (!name || !email || !message) {
+                showToast('Please fill all fields before sending.', true);
+                return;
+            }
 
-            // Construct standard mailto string
-            const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+            // If user hasn't configured FORMSPREE_ENDPOINT, fallback to mailto (existing behavior)
+            if (!FORMSPREE_ENDPOINT) {
+                const recipient = "maakash56@jnn.edu.in";
+                const subject = encodeURIComponent(`Portfolio Inquiry from ${name}`);
+                const body = encodeURIComponent(
+                    `Hi Aakash,\n\nMy name is ${name} (${email}).\n\nHere are my requirements:\n${message}\n\nBest regards,\n${name}`
+                );
 
-            // Provide visual feedback inside the UI
-            formToast.textContent = "Thank you! Launching your mail client to send the inquiry directly to Aakash...";
-            formToast.className = "p-4 rounded-xl text-sm font-medium transition-all duration-300 text-center bg-white/10 text-white border border-white/20";
-            formToast.classList.remove('hidden');
+                const mailtoUrl = `mailto:${recipient}?subject=${subject}&body=${body}`;
+                showToast('No server configured — opening mail client as fallback...');
+                contactForm.reset();
+                window.location.href = mailtoUrl;
+                return;
+            }
 
-            // Reset form input lines
-            contactForm.reset();
+            // Send via Formspree (application/json)
+            try {
+                showToast('Sending message...');
+                const payload = { name, email, message };
+                const res = await fetch(FORMSPREE_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            // Open the mail application handoff
-            window.location.href = mailtoUrl;
-
-            setTimeout(() => {
-                formToast.classList.add('hidden');
-            }, 6000);
+                if (res.ok) {
+                    showToast('Message sent successfully — thank you!');
+                    contactForm.reset();
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    const errMsg = data.error || 'Failed to send message. Try the mail client fallback.';
+                    showToast(errMsg, true);
+                }
+            } catch (err) {
+                showToast('Network error — please try again or use mail client.', true);
+            }
         });
 
         // Live Professional Resume Document Downloader Action
